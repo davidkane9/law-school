@@ -1,0 +1,88 @@
+---
+title: "Law School Admissions"
+format: html
+execute: 
+  echo: false
+---
+
+```{r}
+#| message: false
+library(tidyverse)
+library(rstanarm)
+```
+
+```{r}
+#| message: false
+
+# First pass, I want a variable, accepted, that is TRUE for everyone who was
+# accepted, either regular or off the wait-list. Since there were only 8 such
+# students, their status can't effect the results much.
+
+x <- read_csv("BU_2020.csv") |> 
+  mutate(accepted = if_else(result %in% c("Accepted", "WL, Accepted"), TRUE, FALSE))
+```
+
+As we would expect, accepted students have high LSAT scores and grade point averages.
+
+```{r}
+x |> 
+  summarize(total = n(),
+            avg_lsat = mean(lsat),
+            avg_gpa = mean(gpa2),
+            .by = accepted)
+```
+
+Among all applicants, under-represented minorities, have lower LSAT scores and GPAs.
+
+```{r}
+x |> 
+  summarize(total = n(),
+            avg_lsat = mean(lsat),
+            avg_gpa = mean(gpa2),
+            .by = urm2)
+```
+
+Looking at the cross-tabs, accepted URMs have lower scores/grades than other accepted students.
+
+```{r}
+x |> 
+  summarize(total = n(),
+            avg_lsat = mean(lsat),
+            avg_gpa = mean(gpa2),
+            .by = c(accepted, urm2))
+```
+
+All of this suggests that LSAT, GPA and URM-status plays a role in admissions. A simple Bayesian logistic model confirms that intuition.
+
+```{r}
+mod_obj_1 <- stan_glm(accepted ~ lsat + gpa2 + urm2,
+                    family = binomial(),
+                    data = x,
+                    refresh = 0,
+                    seed = 9)
+
+mod_obj_1 
+```
+
+The three predictors all have the expected sign and are all highly statistically significant. Are the coefficients robust to other modelling choices? Tough to say. I found no evidence that interaction terms are important. However, if we defines `accepted` to include anyone accepted (either regular or off the waitlist) or placed on the waitlist at the beginning, we get a different model.
+
+
+```{r}
+y <- read_csv("BU_2020.csv") |> 
+  mutate(accepted = if_else(result %in% c("Accepted", "WL, Accepted", "Waitlisted"), TRUE, FALSE))
+  
+
+
+mod_obj_2 <- stan_glm(accepted ~ lsat + gpa2 + urm2,
+                    family = binomial(),
+                    data = y,
+                    refresh = 0,
+                    seed = 9)
+
+mod_obj_2
+```
+
+All the coeffients have the correct sign and are significant. But all are *smaller*. For me, this is a sign that the waitlist decision is much noisier, subject to various weirdnesses. Including these applicants as accepted *dilutes* the signal, as if we just added random noice to the process. So, I will stick with the first model.
+
+
+

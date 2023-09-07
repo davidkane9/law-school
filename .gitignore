@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+*Rproj
+
+BU_2020.csv
+
+admissions_files
