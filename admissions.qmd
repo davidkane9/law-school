@@ -22,7 +22,7 @@ x <- read_csv("BU_2020.csv") |>
   mutate(accepted = if_else(result %in% c("Accepted", "WL, Accepted"), TRUE, FALSE))
 ```
 
-As we would expect, accepted students have high LSAT scores and grade point averages.
+As we would expect, accepted students have higher LSAT scores and grade point averages.
 
 ```{r}
 x |> 
@@ -68,6 +68,7 @@ The three predictors all have the expected sign and are all highly statistically
 
 
 ```{r}
+#| message: false
 y <- read_csv("BU_2020.csv") |> 
   mutate(accepted = if_else(result %in% c("Accepted", "WL, Accepted", "Waitlisted"), TRUE, FALSE))
   
@@ -83,6 +84,44 @@ mod_obj_2
 ```
 
 All the coeffients have the correct sign and are significant. But all are *smaller*. For me, this is a sign that the waitlist decision is much noisier, subject to various weirdnesses. Including these applicants as accepted *dilutes* the signal, as if we just added random noice to the process. So, I will stick with the first model.
+
+
+```{r}
+newobs <- crossing(urm2 = c(0, 1),
+                   lsat = 147:180,
+                   gpa2 = 3.67) |> 
+  mutate(names = paste(urm2, lsat, sep = "_"))
+
+posterior_epred(object = mod_obj_1, 
+                newdata = newobs) |> 
+  as_tibble() |>
+  set_names(newobs$names) |> 
+  pivot_longer(names_to = c("URM", "LSAT"),
+               names_sep = "_",
+               values_to = "prob_admissions",
+               cols = everything()) |> 
+  mutate(LSAT = parse_number(LSAT)) |> 
+  summarise(prob = mean(prob_admissions), .by = c(URM, LSAT)) |> 
+  mutate(URM = factor(if_else(URM == 0, "No", "Yes"), levels = c("Yes", "No"))) |> 
+  
+  ggplot(aes(LSAT, prob, color = URM)) +
+    geom_point() +
+    
+  
+  labs(title = "Probability of Admissions by LSAT Score and URM Status",
+         subtitle = "Largest preferences for URM at LSAT scores from 165 -- 172",
+         x = "LSAT",
+         y = "Probability",
+         caption = "GPA set to sample average of 3.67") + 
+    scale_x_continuous(labels = 
+                         scales::number_format(accuracy = 1)) +
+    scale_y_continuous(labels = 
+                         scales::percent_format(accuracy = 1)) +
+    theme_classic()
+
+  
+```
+
 
 
 

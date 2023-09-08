@@ -60,7 +60,7 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>As we would expect, accepted students have high LSAT scores and grade point averages.</p>
+<p>As we would expect, accepted students have higher LSAT scores and grade point averages.</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 4
@@ -95,107 +95,25 @@ ul.task-list li input[type="checkbox"] {
 <p>All of this suggests that LSAT, GPA and URM-status plays a role in admissions. A simple Bayesian logistic model confirms that intuition.</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>
-SAMPLING FOR MODEL 'bernoulli' NOW (CHAIN 1).
-Chain 1: 
-Chain 1: Gradient evaluation took 4.7e-05 seconds
-Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.47 seconds.
-Chain 1: Adjust your expectations accordingly!
-Chain 1: 
-Chain 1: 
-Chain 1: Iteration:    1 / 2000 [  0%]  (Warmup)
-Chain 1: Iteration:  200 / 2000 [ 10%]  (Warmup)
-Chain 1: Iteration:  400 / 2000 [ 20%]  (Warmup)
-Chain 1: Iteration:  600 / 2000 [ 30%]  (Warmup)
-Chain 1: Iteration:  800 / 2000 [ 40%]  (Warmup)
-Chain 1: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-Chain 1: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-Chain 1: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-Chain 1: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-Chain 1: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
-Chain 1: 
-Chain 1:  Elapsed Time: 0.196294 seconds (Warm-up)
-Chain 1:                0.182377 seconds (Sampling)
-Chain 1:                0.378671 seconds (Total)
-Chain 1: 
+<pre><code>stan_glm
+ family:       binomial [logit]
+ formula:      accepted ~ lsat + gpa2 + urm2
+ observations: 1266
+ predictors:   4
+------
+            Median MAD_SD
+(Intercept) -91.0    5.2 
+lsat          0.4    0.0 
+gpa2          4.6    0.4 
+urm2          2.9    0.3 
 
-SAMPLING FOR MODEL 'bernoulli' NOW (CHAIN 2).
-Chain 2: 
-Chain 2: Gradient evaluation took 2.4e-05 seconds
-Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.24 seconds.
-Chain 2: Adjust your expectations accordingly!
-Chain 2: 
-Chain 2: 
-Chain 2: Iteration:    1 / 2000 [  0%]  (Warmup)
-Chain 2: Iteration:  200 / 2000 [ 10%]  (Warmup)
-Chain 2: Iteration:  400 / 2000 [ 20%]  (Warmup)
-Chain 2: Iteration:  600 / 2000 [ 30%]  (Warmup)
-Chain 2: Iteration:  800 / 2000 [ 40%]  (Warmup)
-Chain 2: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-Chain 2: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-Chain 2: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-Chain 2: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-Chain 2: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
-Chain 2: 
-Chain 2:  Elapsed Time: 0.197233 seconds (Warm-up)
-Chain 2:                0.206616 seconds (Sampling)
-Chain 2:                0.403849 seconds (Total)
-Chain 2: 
-
-SAMPLING FOR MODEL 'bernoulli' NOW (CHAIN 3).
-Chain 3: 
-Chain 3: Gradient evaluation took 2.3e-05 seconds
-Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.23 seconds.
-Chain 3: Adjust your expectations accordingly!
-Chain 3: 
-Chain 3: 
-Chain 3: Iteration:    1 / 2000 [  0%]  (Warmup)
-Chain 3: Iteration:  200 / 2000 [ 10%]  (Warmup)
-Chain 3: Iteration:  400 / 2000 [ 20%]  (Warmup)
-Chain 3: Iteration:  600 / 2000 [ 30%]  (Warmup)
-Chain 3: Iteration:  800 / 2000 [ 40%]  (Warmup)
-Chain 3: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-Chain 3: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-Chain 3: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-Chain 3: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-Chain 3: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)
-Chain 3: 
-Chain 3:  Elapsed Time: 0.20449 seconds (Warm-up)
-Chain 3:                0.185701 seconds (Sampling)
-Chain 3:                0.390191 seconds (Total)
-Chain 3: 
-
-SAMPLING FOR MODEL 'bernoulli' NOW (CHAIN 4).
-Chain 4: 
-Chain 4: Gradient evaluation took 2.5e-05 seconds
-Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.25 seconds.
-Chain 4: Adjust your expectations accordingly!
-Chain 4: 
-Chain 4: 
-Chain 4: Iteration:    1 / 2000 [  0%]  (Warmup)
-Chain 4: Iteration:  200 / 2000 [ 10%]  (Warmup)
-Chain 4: Iteration:  400 / 2000 [ 20%]  (Warmup)
-Chain 4: Iteration:  600 / 2000 [ 30%]  (Warmup)
-Chain 4: Iteration:  800 / 2000 [ 40%]  (Warmup)
-Chain 4: Iteration: 1000 / 2000 [ 50%]  (Warmup)
-Chain 4: Iteration: 1001 / 2000 [ 50%]  (Sampling)
-Chain 4: Iteration: 1200 / 2000 [ 60%]  (Sampling)
-Chain 4: Iteration: 1400 / 2000 [ 70%]  (Sampling)
-Chain 4: Iteration: 1600 / 2000 [ 80%]  (Sampling)
-Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)
-Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)
-Chain 4: 
-Chain 4:  Elapsed Time: 0.183473 seconds (Warm-up)
-Chain 4:                0.202126 seconds (Sampling)
-Chain 4:                0.385599 seconds (Total)
-Chain 4: </code></pre>
+------
+* For help interpreting the printed output see ?print.stanreg
+* For info on the priors used see ?prior_summary.stanreg</code></pre>
 </div>
+</div>
+<p>The three predictors all have the expected sign and are all highly statistically significant. Are the coefficients robust to other modelling choices? Tough to say. I found no evidence that interaction terms are important. However, if we defines <code>accepted</code> to include anyone accepted (either regular or off the waitlist) or placed on the waitlist at the beginning, we get a different model.</p>
+<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>stan_glm
  family:       binomial [logit]
@@ -204,14 +122,20 @@ Chain 4: </code></pre>
  predictors:   4
 ------
             Median MAD_SD
-(Intercept) -90.8    5.0 
-lsat          0.4    0.0 
-gpa2          4.6    0.4 
-urm2          2.9    0.3 
+(Intercept) -42.4    3.1 
+lsat          0.2    0.0 
+gpa2          3.1    0.3 
+urm2          1.5    0.2 
 
 ------
 * For help interpreting the printed output see ?print.stanreg
 * For info on the priors used see ?prior_summary.stanreg</code></pre>
+</div>
+</div>
+<p>All the coeffients have the correct sign and are significant. But all are <em>smaller</em>. For me, this is a sign that the waitlist decision is much noisier, subject to various weirdnesses. Including these applicants as accepted <em>dilutes</em> the signal, as if we just added random noice to the process. So, I will stick with the first model.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="admissions_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
